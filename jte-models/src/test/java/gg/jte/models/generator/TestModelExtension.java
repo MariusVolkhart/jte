@@ -53,8 +53,9 @@ public class TestModelExtension {
                     .name("hello.jte")
                     .className("JtehelloGenerated")
                     .addParams(mockParamDescription()
-                            .type("java.lang.String")
-                            .name("message"));
+                            .type("Message")
+                            .name("message"))
+                    .addImports("my.app.Message");
 
 
             // When
@@ -85,7 +86,8 @@ public class TestModelExtension {
             generatedPaths.forEach(path -> {
                 try {
                     String contents = Files.readString(path);
-                    assertThat(contents).contains("JteModel hello(java.lang.String message)");
+                    assertThat(contents).contains("import Message;");
+                    assertThat(contents).contains("JteModel hello(my.app.Message message)");
                 } catch (IOException ex) {
                     fail("Could not read file " + path, ex);
                 }
@@ -118,8 +120,9 @@ public class TestModelExtension {
                     .name("hello.kte")
                     .className("JtehelloGenerated")
                     .addParams(mockParamDescription()
-                            .type("java.lang.String")
-                            .name("message"));
+                            .type("Message")
+                            .name("message"))
+                    .addImports("my.app.Message");
 
             // When
             Collection<Path> generatedPaths = modelExtension.generate(
@@ -148,7 +151,9 @@ public class TestModelExtension {
 
             generatedPaths.forEach(path -> {
                 try {
-                    assertThat(Files.readString(path)).contains("fun hello(message: java.lang.String): JteModel");
+                    var contents = Files.readString(path);
+                    assertThat(contents).contains("import my.app.Message");
+                    assertThat(contents).contains("fun hello(message: Message): JteModel");
                 } catch (IOException ex) {
                     fail("Could not read file " + path, ex);
                 }
